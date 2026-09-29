@@ -1,0 +1,7 @@
+# Large binary redistributions: keep via GitHub Releases, not git blobs
+upstream/*.tar.xz
+upstream/*.tar.gz
+output/
+*.conda
+.rattler/
+build_artifacts/

@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+# Version must match Docker tag: 1.8.17
+context:
+  version: "1.8.17"
+
+package:
+  name: omiga
+  version: ${{ version }}
+
+source:
+  # Prefer GitHub Release when available; local path used for first build
+  path: ../upstream/OmiGA-build-v1.8.17-x86_64.tar.xz
+  sha256: 6cfbed0b52085489d5a4b4b549c2343e6ae53921474087cdf28876c2c214ea23
+
+build:
+  number: 0
+  dynamic_linking:
+    binary_relocation: false
+  script:
+    - |
+      set -euxo pipefail
+      mkdir -p "${PREFIX}/opt/omiga" "${PREFIX}/bin"
+      if [ -d OmiGA-build-v1.8.17 ]; then
+        cp -a OmiGA-build-v1.8.17/. "${PREFIX}/opt/omiga/"
+      elif [ -d bin ]; then
+        for d in bin lib libexec share libglibc2.34; do
+          if [ -e "${d}" ]; then
+            cp -a "${d}" "${PREFIX}/opt/omiga/"
+          fi
+        done
+      else
+        echo "ERROR: unexpected OmiGA tarball layout" >&2
+        ls -la
+        exit 1
+      fi
+      chmod +x "${PREFIX}/opt/omiga/bin/omiga"
+      ln -sf "${PREFIX}/opt/omiga/bin/omiga" "${PREFIX}/bin/omiga"
+
+
+requirements:
+  run: []
+
+about:
+  homepage: https://omiga.bio
+  summary: OmiGA — Omics Genetic Analysis toolkit for molQTL and GWAS
+  description: |
+    Redistribution of the official Linux x86_64 CPU build v1.8.17 for reproducible Nextflow workflows.
+    Cite Teng et al., Nat Commun 2026 (DOI 10.1038/s41467-026-68978-0).
+  license: GPL-3.0-only
+
+extra:
+  recipe-maintainers:
+    - SiYangming
