@@ -8,7 +8,8 @@ package:
   version: ${{ version }}
 
 source:
-  url: https://github.com/SiYangming/OmiGA/releases/download/1.8.17/OmiGA-build-v1.8.17-x86_64.tar.xz
+  # Prefer GitHub Release when available; local path used for first build
+  path: ../upstream/OmiGA-build-v1.8.17-x86_64.tar.xz
   sha256: 6cfbed0b52085489d5a4b4b549c2343e6ae53921474087cdf28876c2c214ea23
 
 build:
@@ -16,11 +17,25 @@ build:
   dynamic_linking:
     binary_relocation: false
   script:
-    - mkdir -p "${PREFIX}/opt" "${PREFIX}/bin"
-    - if [ -d OmiGA-build-v1.8.17 ]; then SRC=OmiGA-build-v1.8.17; else SRC=.; fi
-    - mv "${SRC}" "${PREFIX}/opt/omiga"
-    - ln -s "${PREFIX}/opt/omiga/bin/omiga" "${PREFIX}/bin/omiga"
-    - chmod +x "${PREFIX}/opt/omiga/bin/omiga" || true
+    - |
+      set -euxo pipefail
+      mkdir -p "${PREFIX}/opt/omiga" "${PREFIX}/bin"
+      if [ -d OmiGA-build-v1.8.17 ]; then
+        cp -a OmiGA-build-v1.8.17/. "${PREFIX}/opt/omiga/"
+      elif [ -d bin ]; then
+        for d in bin lib libexec share libglibc2.34; do
+          if [ -e "${d}" ]; then
+            cp -a "${d}" "${PREFIX}/opt/omiga/"
+          fi
+        done
+      else
+        echo "ERROR: unexpected OmiGA tarball layout" >&2
+        ls -la
+        exit 1
+      fi
+      chmod +x "${PREFIX}/opt/omiga/bin/omiga"
+      ln -sf "${PREFIX}/opt/omiga/bin/omiga" "${PREFIX}/bin/omiga"
+
 
 requirements:
   run: []
