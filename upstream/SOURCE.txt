@@ -1,0 +1,5 @@
+URL: https://omiga.bio/releases/latest.json -> release.linux
+FILE: OmiGA-build-v1.8.17-x86_64.tar.xz
+SHA256: 6cfbed0b52085489d5a4b4b549c2343e6ae53921474087cdf28876c2c214ea23
+DIRECT: https://efile111.hpccube.com:65014/efile/s/d/YWNyZHBkcXZieQ==/08410635d771c08d
+

@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+# Version must match Docker tag: 1.8.17
+context:
+  version: "1.8.17"
+
+package:
+  name: omiga
+  version: ${{ version }}
+
+source:
+  url: https://github.com/SiYangming/OmiGA/releases/download/1.8.17/OmiGA-build-v1.8.17-x86_64.tar.xz
+  sha256: 6cfbed0b52085489d5a4b4b549c2343e6ae53921474087cdf28876c2c214ea23
+
+build:
+  number: 0
+  dynamic_linking:
+    binary_relocation: false
+  script:
+    - mkdir -p "${PREFIX}/opt" "${PREFIX}/bin"
+    - if [ -d OmiGA-build-v1.8.17 ]; then SRC=OmiGA-build-v1.8.17; else SRC=.; fi
+    - mv "${SRC}" "${PREFIX}/opt/omiga"
+    - ln -s "${PREFIX}/opt/omiga/bin/omiga" "${PREFIX}/bin/omiga"
+    - chmod +x "${PREFIX}/opt/omiga/bin/omiga" || true
+
+requirements:
+  run: []
+
+about:
+  homepage: https://omiga.bio
+  summary: OmiGA — Omics Genetic Analysis toolkit for molQTL and GWAS
+  description: |
+    Redistribution of the official Linux x86_64 CPU build v1.8.17 for reproducible Nextflow workflows.
+    Cite Teng et al., Nat Commun 2026 (DOI 10.1038/s41467-026-68978-0).
+  license: GPL-3.0-only
+
+extra:
+  recipe-maintainers:
+    - SiYangming
